@@ -1,6 +1,7 @@
 package id3v2
 
 import (
+	"bytes"
 	. "gopkg.in/check.v1"
 	"os"
 	"testing"
@@ -22,8 +23,25 @@ func (s *Id3v2TagSuite) TestReadNoTag(c *C) {
 	file := readFile("_testdata/tagless-batman.mp3", c)
 	defer file.Close()
 
+	_, err := ReadTag(file)
+
+	c.Check(err.Error(), Equals, "No tag found")
+}
+
+func (s *Id3v2TagSuite) TestReadValidV230Tag(c *C) {
+	file := readFile("_testdata/spice.mp3", c)
+	defer file.Close()
+
 	tag, err := ReadTag(file)
 
-	c.Check(tag, Equals, Id3v2Tag{})
-	c.Check(err.Error(), Equals, "No tag foound")
+	c.Assert(err, Equals, nil)
+	c.Check(tag.version, Equals, "2.3.0")
+	c.Check(tag.Artist(), Equals, "Xander")
+	c.Check(tag.Title(), Equals, "Spice")
+}
+
+func (s *Id3v2TagSuite) TestReadSize(c *C) {
+	b := []byte{0x00, 0x00, 0x00, 0x16}
+
+	c.Assert(determineSizeOfTag(bytes.NewReader(b)), Equals, 22)
 }
