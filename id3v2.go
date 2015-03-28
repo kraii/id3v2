@@ -4,6 +4,7 @@ import (
 	"errors"
 	"fmt"
 	"io"
+	"strings"
 )
 
 type Id3v2Tag struct {
@@ -20,7 +21,7 @@ func ReadTag(r io.Reader) (Id3v2Tag, error) {
 
 	tag := new(Id3v2Tag)
 
-	version := int(readNextByte(r))
+	version := int(readNextByte(r))	
 	revision := int(readNextByte(r))
 	tag.version = fmt.Sprintf("2.%d.%d", version, revision)
 	tag.flags = readNextByte(r)
@@ -84,8 +85,10 @@ func (tag *Id3v2Tag) Artist() string {
 }
 
 func convertString(b []byte) string {
-	if b[0] == '\x00' {
-		return string(b[1:])
+	if len(b) <= 0 {
+		return ""
+	} else if b[0] == '\x00' {
+		return strings.TrimLeft(string(b[1:]), "\x00")
 	} else {
 		panic("SHIT! UTF NICHT 8")
 	}
@@ -93,4 +96,20 @@ func convertString(b []byte) string {
 
 func (tag *Id3v2Tag) Title() string {
 	return convertString(tag.frames["TIT2"])
+}
+
+func (tag *Id3v2Tag) Album() string {
+	return convertString(tag.frames["TALB"])
+}
+
+func (tag *Id3v2Tag) Year() string {
+	return convertString(tag.frames["TYER"])
+}
+
+func (tag *Id3v2Tag) TrackNumber() string {
+	return convertString(tag.frames["TRCK"])
+}
+
+func (tag *Id3v2Tag) Comment() string {
+	return convertString(tag.frames["COMM"])
 }

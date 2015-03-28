@@ -38,6 +38,10 @@ func (s *Id3v2TagSuite) TestReadValidV230Tag(c *C) {
 	c.Check(tag.version, Equals, "2.3.0")
 	c.Check(tag.Artist(), Equals, "Xander")
 	c.Check(tag.Title(), Equals, "Spice")
+	c.Check(tag.Album(), Equals, "Things")
+	c.Check(tag.Year(), Equals, "2015")
+	c.Check(tag.Comment(), Equals, "say -v Xander")
+	c.Check(tag.TrackNumber(), Equals, "1")
 }
 
 func (s *Id3v2TagSuite) TestReadSize(c *C) {
