@@ -1,7 +1,6 @@
 package id3v2
 
 import (
-	"bytes"
 	. "gopkg.in/check.v1"
 	"os"
 	"testing"
@@ -47,5 +46,5 @@ func (s *Id3v2TagSuite) TestReadValidV230Tag(c *C) {
 func (s *Id3v2TagSuite) TestReadSize(c *C) {
 	b := []byte{0x00, 0x00, 0x00, 0x16}
 
-	c.Assert(determineSizeOfTag(bytes.NewReader(b)), Equals, 22)
+	c.Assert(determineSizeOfTag(b), Equals, 22)
 }
