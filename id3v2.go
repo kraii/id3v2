@@ -21,11 +21,10 @@ func ReadTag(r io.Reader) (Id3v2Tag, error) {
 
 	tag := new(Id3v2Tag)
 
-	version := int(readNextByte(r))	
+	version := int(readNextByte(r))
 	revision := int(readNextByte(r))
 	tag.version = fmt.Sprintf("2.%d.%d", version, revision)
 	tag.flags = readNextByte(r)
-
 
 	size := determineSizeOfTag(r)
 	tag.frames = readFrames(size, r)
@@ -90,7 +89,9 @@ func convertString(b []byte) string {
 	} else if b[0] == '\x00' {
 		return strings.TrimLeft(string(b[1:]), "\x00")
 	} else {
-		panic("SHIT! UTF NICHT 8")
+		fmt.Printf("SHEISSE %b", b[0])
+		//panic("SHIT! UTF NICHT 8")
+		return ""
 	}
 }
 
